@@ -1,0 +1,354 @@
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+/* ===== พื้นหลังหลัก (ขาว → ดำ ไล่สี) ===== */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f0f0, #000000);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ===== กล่อง LOGIN ===== */
+.login-container {
+  width: 360px;
+  max-width: 90%;
+  padding: 34px 30px;
+  border-radius: 25px;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.75)),
+    url("/css/img/bg.jpg");
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  text-align: center;
+  color: white;
+
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  animation: fadeIn 0.5s ease;
+}
+
+/* ===== หัวข้อ ===== */
+.login-container h1 {
+  margin-bottom: 6px;
+  font-size: 22px;
+  color: white;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #ddd;
+  margin-bottom: 22px;
+}
+
+/* input ทุกอัน ยกเว้น checkbox */
+.login-container input:not([type="checkbox"]),
+.register-card input:not([type="checkbox"]) {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  outline: none;
+  background: white;
+  transition: 0.25s;
+}
+
+
+/* ===== INPUT ตอนโฟกัส (กรอบชั้นเดียวแบบในรูป) ===== */
+.login-container input:focus,
+.register-card input:focus {
+  box-shadow: 0 0 0 3px #7f5cff;   /* ✅ วงม่วงชั้นเดียว */
+}
+
+/* ===== ปุ่ม LOGIN ไล่ม่วง → ฟ้า ===== */
+#loginBtn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: white;
+
+  background: linear-gradient(135deg, #7f5cff, #3fd1ff);
+  transition: 0.3s;
+}
+
+#loginBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* ===== ลิงก์ สมัครอีเมลใหม่ ===== */
+.register-text {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #cccccc;
+  text-align: center;
+}
+
+.register-text span {
+  color: #4fd3ff;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 4px;
+  transition: 0.2s;
+}
+
+.register-text span:hover {
+  text-decoration: underline;
+  color: #7fe3ff;
+}
+
+/* ===== ERROR MESSAGE ===== */
+.error {
+  color: #ff6b6b;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* ===== REGISTER POPUP ===== */
+.register-container {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.register-container.show {
+  display: flex;
+}
+
+/* การ์ดสมัคร */
+.register-card {
+  width: 340px;
+  padding: 30px 26px;
+  border-radius: 26px;
+
+  background:
+    linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)),
+    url("/css/img/bg.jpg");
+
+  background-size: cover;
+  background-position: center;
+
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  animation: fadeIn 0.4s ease;
+  position: relative;
+}
+
+/* ปุ่มย้อนกลับ */
+.back-btn {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  font-size: 22px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+/* หัวข้อสมัคร */
+.register-card h2 {
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 22px;
+  color: white;
+}
+
+.register-card .subtitle {
+  font-size: 14px;
+  color: #dddddd;
+  margin-bottom: 22px;
+}
+
+/* ปุ่มสมัคร */
+.register-card button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  background: linear-gradient(135deg, #7b6cff, #4fd3ff);
+  transition: 0.3s;
+}
+
+.register-card button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* ข้อความแจ้ง error สมัคร */
+#regMsg {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #ff5c5c;
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 500px) {
+  .login-container,
+  .register-card {
+    width: 95%;
+    padding: 26px 22px;
+  }
+}
+
+@media (max-width: 560px) {
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100svh;
+    min-height: 100dvh;
+    padding: 12px;
+  }
+
+  .login-container,
+  .register-card {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    padding: 24px 18px;
+    margin: 0 auto;
+  }
+
+  .login-container h1,
+  .register-card h2 {
+    font-size: 20px;
+  }
+
+  .login-container input:not([type="checkbox"]),
+  .register-card input:not([type="checkbox"]) {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  #loginBtn,
+  .register-card button {
+    min-height: 44px;
+    font-size: 15px;
+  }
+}
+/* ===== กล่องรหัส + ปุ่มติ๊กในช่อง (เวอร์ชันไม่บัค) ===== */
+.password-box {
+  position: relative;
+  width: 100%;
+  margin-bottom: 14px;
+}
+
+/* ช่องรหัสเท่านั้น (ไม่รวม checkbox) */
+.password-box input[type="password"],
+.password-box input[type="text"] {
+  width: 100%;
+  padding: 12px 44px 12px 14px;   /* เผื่อที่ด้านขวา */
+  border-radius: 12px;
+  border: none;
+  font-size: 14px;
+  outline: none;
+  background: white;
+  transition: 0.25s;
+}
+
+/* วงม่วงตอนกด */
+.password-box input[type="password"]:focus,
+.password-box input[type="text"]:focus {
+  box-shadow: 0 0 0 3px #7f5cff;
+}
+
+/* checkbox ปุ่มติ๊กเล็ก ๆ */
+.check-eye {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+  border: 2px solid #aaa;
+  border-radius: 4px;
+  background: white;
+}
+
+/* ตอนติ๊ก */
+.check-eye:checked {
+  background: #7f5cff;
+  border-color: #7f5cff;
+}
+
+/* เครื่องหมายถูก */
+.check-eye:checked::after {
+  content: "✓";
+  color: white;
+  font-size: 14px;
+  position: absolute;
+  left: 2px;
+  top: -3px;
+}
+/* ===== กล่องแสดงรหัสผ่าน ใต้ช่อง ===== */
+.show-pass-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin-top: -4px;
+  margin-bottom: 14px;
+
+  font-size: 13px;
+  color: #dddddd;
+  cursor: pointer;
+}
+
+.show-pass-box input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.show-pass-box label {
+  cursor: pointer;
+}

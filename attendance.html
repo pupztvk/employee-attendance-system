@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เช็คชื่อพนักงาน</title>
+
+  <!-- ลิงก์ไฟล์ CSS -->
+  <link rel="stylesheet" href="css/dashboard.css?v=20260219-4">
+</head>
+
+<body class="login-page">
+
+  <div class="attendance-card">
+    <h2>ระบบเช็คชื่อพนักงาน</h2>
+
+    <!-- แถบตัวเลือก -->
+    <div class="filter-bar">
+  <!-- วันที่ -->
+  <div>
+    วันที่ :
+    <input type="date" id="date">
+    <div id="thaiDate" style="font-size: 14px; color: #555;"></div>
+  </div>
+
+  <!-- ช่วงเวลา -->
+  <div>
+    ช่วงเวลา :
+    <select id="timePeriod">
+      <option value="">-- เลือกช่วงเวลา --</option>
+      <option value="เช้า">เช้า</option>
+      <option value="บ่าย">บ่าย</option>
+    </select>
+  </div>
+
+  <!-- แผนก -->
+  <div>
+    แผนก :
+    <select id="department" onchange="loadEmployees()">
+      <option value="">-- เลือกแผนก --</option>
+      <option value="IT">ฝ่ายเทคนิค</option>
+      <option value="บัญชี">ออฟฟิศ</option>
+      <option value="บุคคล">ซ่อมบำรุง</option>
+      <option value="ขาย">วิศวกร</option>
+    </select>
+  </div>
+</div>
+
+
+    <!-- ตารางรายชื่อ -->
+    <table>
+      <thead>
+       <tr>
+  <th>แผนก</th>
+  <th>รหัส</th>
+  <th>คำนำหน้า (TH)</th>
+  <th>คำนำหน้า (EN)</th>
+  <th>ชื่อ–นามสกุล</th>
+
+  <th>มา</th>
+  <th>ลาป่วย</th>
+  <th>ลากิจ</th>
+  <th>ขาด</th>
+  <th>OT</th>
+</tr>
+
+      </thead>
+      <tbody id="employeeTable">
+        <!-- รายชื่อจะมาจาก Supabase -->
+      </tbody>
+    </table>
+
+    <button id="saveBtn">บันทึกการเช็คชื่อ</button>
+  </div>
+
+  <!-- เรียกไฟล์ JS -->
+  <script type="module" src="js/attendance.js"></script>
+
+</body>
+</html>
