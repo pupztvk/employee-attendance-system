@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบเช็คชื่อพนักงาน - HR System</title>
+  
+  <link rel="stylesheet" href="css/dashboard.css?v=20260219-4">
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-brand">🚀 HR System</div>
+    <div class="nav-menu">
+      <button id="navAttendance" class="nav-btn active">📋 เช็คชื่อ</button>
+      <button id="navHistory" class="nav-btn">📜 ประวัติ/รายงาน</button>
+      <button id="navEmployee" class="nav-btn">⚙️ จัดการพนักงาน</button>
+      <button id="navMobileQR" class="nav-btn nav-btn-qr">📱 QR มือถือ</button>
+      <button id="logoutBtn" class="nav-btn logout">ออกจากระบบ</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    
+    <div id="section-attendance" class="content-section active">
+      <div class="card-header">
+        <h2>บันทึกเวลาทำงาน</h2>
+        <p>เลือกแผนกและระบุสถานะการมาทำงาน</p>
+      </div>
+
+      <div class="filter-section">
+        <div class="form-group"><label>📅 วันที่</label><input type="date" id="dateInput"></div>
+        <div class="form-group"><label>⏰ ช่วงเวลา</label><select id="period_select"><option value="morning">🌅 เช้า</option><option value="afternoon">🌇 บ่าย (+OT)</option></select></div>
+        <div class="form-group"><label>🏢 แผนก</label><select id="dept_filter"><option value="">-- กรุณาเลือกแผนก --</option><option value="IT">ฝ่ายเทคนิค</option><option value="บัญชี">ออฟฟิศ</option><option value="บุคคล">ซ่อมบำรุง</option><option value="ขาย">วิศวกร</option></select></div>
+      </div>
+
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+                <th width="10%">แผนก</th><th width="15%">รหัส</th><th width="25%">ชื่อ-นามสกุล</th>
+                <th width="10%">มา</th><th width="10%">ลาป่วย</th><th width="10%">ลากิจ</th><th width="10%">ขาด</th>
+                <th width="10%" id="th_ot" style="display:none;">OT</th>
+            </tr>
+          </thead>
+          <tbody id="attendanceTableBody">
+            <tr>
+                <td colspan="8" style="padding: 60px; color: #999;">
+                    <div style="font-size: 40px; margin-bottom: 15px;">🏢</div>
+                    กรุณาเลือก <b>"แผนก"</b> ด้านบนเพื่อแสดงรายชื่อ
+                </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="attendance-action-row">
+        <button id="saveAttendanceBtn" class="btn-main">💾 บันทึกข้อมูลการเช็คชื่อ</button>
+        <button id="editAttendanceBtn" class="btn-main btn-edit">✏️ แก้ไขข้อมูลเช็คชื่อ</button>
+      </div>
+    </div>
+
+    <div id="section-history" class="content-section">
+      <div class="card-header">
+        <h2>ประวัติ / รายงาน</h2>
+        <p>ดูประวัติย้อนหลังและสรุปสถิติ</p>
+      </div>
+      
+      <div class="filter-section">
+  <div class="form-group">
+    <label>วันที่</label>
+    <input type="date" id="hist_date">
+  </div>
+
+  <div class="form-group">
+    <label>ช่วงเวลา</label>
+    <select id="hist_period">
+      <option value="all">ทุกช่วงเวลา</option>   <!-- ✅ เพิ่ม -->
+      <option value="morning">เช้า</option>
+      <option value="afternoon">บ่าย</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>แผนก</label>
+    <select id="hist_dept">
+      <option value="IT">ฝ่ายเทคนิค</option>
+      <option value="บัญชี">ออฟฟิศ</option>
+      <option value="บุคคล">ซ่อมบำรุง</option>
+      <option value="ขาย">วิศวกร</option>
+    </select>
+  </div>
+
+  <div class="form-group" style="flex:0;">
+    <button id="searchHistoryBtn" class="btn-search">🔍</button>
+  </div>
+</div>
+
+
+      <div id="statsContainer" style="display:none; margin-bottom: 20px; background: #f8f9fa; padding: 20px; border-radius: 20px;">
+  <h3 style="text-align:center; font-size:16px; margin-bottom:10px; color:#555;">สรุปสถิติประจำวัน</h3>
+
+  <div class="stats-grid" style="display:grid; grid-template-columns: 1.2fr 1.2fr .8fr; gap:20px; align-items:center;">
+    
+    <!-- กราฟวงกลม -->
+    <div class="chart-box" style="height:220px;">
+      <canvas id="attendanceDonut"></canvas>
+    </div>
+
+    <!-- กราฟแท่ง -->
+    <div class="chart-box" style="height:220px;">
+      <canvas id="attendanceBar"></canvas>
+    </div>
+
+    <!-- กล่องสรุปตัวเลข -->
+<div class="stats-box" id="statsSummaryBox">
+  <p>👥 มา: <b id="statCome">0</b> คน</p>
+  <p>🤒 ลาป่วย: <b id="statSick">0</b> คน</p>
+  <p>📝 ลากิจ: <b id="statLeave">0</b> คน</p>
+  <p>❌ ขาด: <b id="statAbsent">0</b> คน</p>
+  <p>⏱️ OT: <b id="statOT">0</b> คน</p>
+  <hr>
+  <p>📌 รวมทั้งหมด: <b id="statTotal">0</b> คน</p>
+</div>
+  </div>
+</div>
+
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end; margin-bottom: 15px;">
+        <button id="exportExcelPopupBtn" style="background:#217346; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer;">📊 Excel</button>
+      </div>
+
+      <div class="table-responsive" style="max-height: 400px;">
+        <table>
+          <thead><tr><th>แผนก</th><th>รหัส</th><th>ชื่อ</th><th>ช่วงเวลา</th><th>สถานะ</th><th>OT</th></tr></thead>
+          <tbody id="historyTableBody"><tr><td colspan="6" style="color:#999; padding:20px;">กดค้นหาเพื่อดูข้อมูล</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="section-employee" class="content-section">
+      <div class="card-header">
+        <h2>จัดการพนักงาน</h2>
+        <p>เพิ่ม ย้าย หรือลบข้อมูลพนักงานในระบบ</p>
+      </div>
+      
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('add')">เพิ่มพนักงาน</button>
+        <button class="tab-btn" onclick="switchTab('transfer')">ย้ายแผนก</button>
+        <button class="tab-btn" onclick="switchTab('remove')">ลบออก</button>
+      </div>
+
+      <div id="tab-add" class="tab-content active">
+
+  <div class="form-grid-emp">
+
+    <div class="field">
+      <label>คำนำหน้า</label>
+      <select id="add_prefix">
+        <option value="นาย">นาย</option>
+        <option value="นาง">นาง</option>
+        <option value="นางสาว">นางสาว</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>รหัสพนักงาน</label>
+      <input type="text" id="add_emp_code" placeholder="ตัวเลขเท่านั้น">
+    </div>
+
+    <div class="field">
+      <label>ชื่อจริง</label>
+      <input type="text" id="add_first_name">
+    </div>
+
+    <div class="field">
+      <label>นามสกุล</label>
+      <input type="text" id="add_last_name">
+    </div>
+
+    <div class="field">
+      <label>แผนก</label>
+      <select id="dept_add">
+        <option value="">-- เลือก --</option>
+        <option value="IT">ฝ่ายเทคนิค</option>
+        <option value="บัญชี">ออฟฟิศ</option>
+        <option value="บุคคล">ซ่อมบำรุง</option>
+        <option value="ขาย">วิศวกร</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>เริ่มงานวันที่</label>
+      <input type="date" id="add_start_date">
+    </div>
+
+  </div>
+
+  <button id="saveNewEmployeeBtn" class="btn-main">บันทึกข้อมูล</button>
+
+</div>
+
+
+      <div id="tab-transfer" class="tab-content">
+        <div class="search-row">
+            <input type="text" id="trans_search_code" placeholder="ระบุรหัสพนักงาน...">
+            <button id="searchTransBtn" class="btn-search">ค้นหา</button>
+        </div>
+        <div id="trans_form_area" class="readonly-box">
+            <label>ชื่อพนักงาน</label><input type="text" id="trans_name" readonly>
+            <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+                <div style="flex:1"><label>แผนกเดิม</label><input type="text" id="trans_current_dept" readonly></div>
+                <div style="font-size:20px;">➔</div>
+                <div style="flex:1"><label style="color:var(--primary-color);">แผนกใหม่</label>
+                    <select id="trans_new_dept" style="border:2px solid var(--primary-color);"><option value="">เลือก</option><option value="IT">ฝ่ายเทคนิค</option><option value="บัญชี">ออฟฟิศ</option><option value="บุคคล">ซ่อมบำรุง</option><option value="ขาย">วิศวกร</option></select>
+                </div>
+            </div>
+            <button id="confirmTransBtn" class="btn-main" style="margin-top:15px; background:#17a2b8;">ยืนยันการย้าย</button>
+        </div>
+      </div>
+
+      <div id="tab-remove" class="tab-content">
+        <div class="search-row">
+            <input type="text" id="del_search_code" placeholder="ระบุรหัสพนักงาน...">
+            <button id="searchDelBtn" class="btn-search" style="background:#dc3545;">ค้นหา</button>
+        </div>
+        <div id="del_form_area" class="readonly-box" style="border:1px solid #ffebee; background:#fff5f5;">
+            <label>ชื่อ - นามสกุล</label><input type="text" id="del_first_name" readonly>
+            <label>แผนก</label><input type="text" id="del_dept" readonly>
+            <button id="confirmDelBtn" class="btn-main" style="margin-top:15px; background:#dc3545;" disabled>ยืนยันลบข้อมูล</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/dashboard_logic.js"></script>
+  <script type="module" src="js/attendance.js"></script>
+  <script type="module" src="js/add_employee.js?v=20260220-1"></script>
+  <script type="module" src="js/history.js?v=20260219-2"></script>
+  <script type="module" src="js/qr_access.js"></script>
+</body>
+</html>

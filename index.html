@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ | ระบบเช็คชื่อพนักงาน</title>
+  <link rel="stylesheet" href="css/style.css?v=20260219-3" />
+</head>
+<body>
+
+  <!-- ===== LOGIN BOX ===== -->
+  <div class="login-container" id="loginBox">
+    <h1>ระบบเช็คชื่อพนักงาน</h1>
+    <p class="subtitle">สำหรับพนักงานเท่านั้น</p>
+
+    <input type="email" id="email" placeholder="email" />
+    <input type="password" id="password" placeholder="password" />
+
+    <button id="loginBtn">เข้าสู่ระบบ</button>
+    <p id="login-error" style="color:red; margin-top:10px;"></p>
+    <p id="error" class="error"></p>
+
+    <!-- สมัครอีเมลใหม่ แบบข้อความล้วน -->
+    <p class="register-text">
+      สมัครอีเมลใหม่ ?
+      <span onclick="showRegister()">คลิกตรงนี้</span>
+    </p>
+  </div>
+
+<!-- ===== REGISTER BOX ===== -->
+<div class="register-container" id="registerBox">
+  <div class="register-card">
+
+    <!-- ปุ่มย้อนกลับ -->
+    <div class="back-btn" onclick="hideRegister()">↩</div>
+
+    <h2>สมัครบัญชีใหม่</h2>
+    <p class="subtitle">สำหรับพนักงานเท่านั้น</p>
+
+    <input type="email" id="regEmail" placeholder="Email" />
+
+<!-- ช่องรหัส -->
+<input type="password" id="regPassword" placeholder="Password" />
+
+<!-- แสดง / ซ่อนรหัส -->
+<div class="show-pass-box">
+  <input type="checkbox" id="showPass" onclick="togglePassword()">
+  <label for="showPass">แสดงรหัสผ่าน</label>
+</div>
+
+    <button onclick="register()">สมัครบัญชี</button>
+
+    <p id="regMsg"></p>
+  </div>
+</div>
+
+
+  <!-- ต้องเป็น module -->
+  <script type="module" src="js/auth.js"></script>
+
+</body>
+</html>
